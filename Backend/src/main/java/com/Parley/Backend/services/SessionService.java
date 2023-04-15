@@ -22,7 +22,7 @@ public class SessionService {
         do {
             newSessionCode = r.nextInt(9999) + 1;
         }
-        while (sessionRepository.findBySessionCode(newSessionCode).isPresent());
+        while (sessionRepository.findBySessionCodeAndStatus(newSessionCode, "Active").isPresent());
 
         Session createdSession =  new Session();
 
