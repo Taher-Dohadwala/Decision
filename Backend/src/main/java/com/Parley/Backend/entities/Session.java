@@ -22,11 +22,8 @@ public class Session {
 
     private int sessionCode;
 
-    private List<Location> locations;
-
     private String status;
-
-
+    // private List<Location> locations;
     //private DecisionState decisionState;
 
 }
