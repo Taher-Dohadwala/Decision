@@ -23,7 +23,12 @@ public class Session {
     private int sessionCode;
 
     private String status;
-    // private List<Location> locations;
+
+
+    @OneToMany(mappedBy = "session")
+    private List<Location> locations;
+
+
     //private DecisionState decisionState;
 
 }
