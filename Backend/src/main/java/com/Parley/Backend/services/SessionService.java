@@ -6,6 +6,7 @@ import com.Parley.Backend.entities.Session;
 import com.Parley.Backend.repositories.LocationRepository;
 import com.Parley.Backend.repositories.SessionRepository;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import java.util.Random;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class SessionService {
 
     private final SessionRepository sessionRepository;
@@ -34,14 +36,13 @@ public class SessionService {
         createdSession.setSessionCode(newSessionCode);
         createdSession.setStatus("Active");
 
-        Location savedLocation = locationRepository.save(location);
-
-        List<Location> newLocationList = new ArrayList<Location>();
-
-        newLocationList.add(savedLocation);
-        createdSession.setLocations(newLocationList);
-
         Session savedSession = sessionRepository.save(createdSession);
+        log.info("New Session was create with ID: " + savedSession.getSessionId());
+
+        location.setSession(savedSession);
+        locationRepository.save(location);
+        log.info("New Location added: " + location.getLatitude() + ", " + location.getLongitude());
+
 
 
         return this.mapToSessionResponse(savedSession);

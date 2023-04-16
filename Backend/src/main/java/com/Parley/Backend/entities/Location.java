@@ -2,6 +2,7 @@ package com.Parley.Backend.entities;
 
 
 import com.Parley.Backend.entities.Session;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,6 +28,7 @@ public class Location {
 
     @ManyToOne
     @JoinColumn(name="session_id")
+    @JsonIgnore
     private Session session;
 
 }
