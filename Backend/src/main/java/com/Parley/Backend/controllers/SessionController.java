@@ -1,5 +1,6 @@
 package com.Parley.Backend.controllers;
 
+import com.Parley.Backend.dto.LocationResponse;
 import com.Parley.Backend.dto.SessionResponse;
 import com.Parley.Backend.entities.Location;
 import com.Parley.Backend.entities.Session;
@@ -23,10 +24,23 @@ public class SessionController {
         return sessionService.createSession(location);
     }
 
+    @PostMapping("/join-session/{session_code}")
+    @ResponseStatus(HttpStatus.OK)
+    public SessionResponse joinSession(@PathVariable("session_code") int sessionCode, @RequestBody Location location) {
+        return sessionService.joinSession(sessionCode, location);
+    }
+
     @GetMapping("/{session_id}")
     @ResponseStatus(HttpStatus.OK)
-    public Session getSession(@PathVariable("session_id") Long session_id){
-        return sessionService.getSession(session_id);
+    public Session getSession(@PathVariable("session_id") Long sessionId) {
+        return sessionService.getSession(sessionId);
+
+    }
+
+    @GetMapping("/center-location/{session_id}")
+    @ResponseStatus(HttpStatus.OK)
+    public LocationResponse getCenterLocation(@PathVariable("session_id") Long sessionId) {
+        return sessionService.getCenterLocation(sessionId);
 
     }
 
@@ -36,5 +50,9 @@ public class SessionController {
         return sessionService.getAllLocations();
 
     }
+
+
+
+
 
 }

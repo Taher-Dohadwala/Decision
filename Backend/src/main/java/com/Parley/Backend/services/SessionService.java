@@ -1,5 +1,6 @@
 package com.Parley.Backend.services;
 
+import com.Parley.Backend.dto.LocationResponse;
 import com.Parley.Backend.dto.SessionResponse;
 import com.Parley.Backend.entities.Location;
 import com.Parley.Backend.entities.Session;
@@ -9,7 +10,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.Random;
 
@@ -50,6 +52,26 @@ public class SessionService {
     }
 
 
+    public Session getSession(Long session_id) {
+
+        return sessionRepository.findById(session_id).get();
+    }
+
+    public List<Location> getAllLocations() {
+        return locationRepository.findAll();
+    }
+
+    public SessionResponse joinSession(int sessionCode, Location location){
+
+        Session joinSession = sessionRepository.findBySessionCodeAndStatus(sessionCode, "Active").get();
+
+        location.setSession(joinSession);
+
+        locationRepository.save(location);
+
+        return this.mapToSessionResponse(joinSession);
+    }
+
     private SessionResponse mapToSessionResponse(Session session){
         return SessionResponse.builder()
                 .sessionId(session.getSessionId())
@@ -58,13 +80,27 @@ public class SessionService {
                 .build();
     }
 
+    public LocationResponse getCenterLocation(Long sessionId) {
 
-    public Session getSession(Long session_id) {
+        Session currentSession = sessionRepository.findById(sessionId).get();
 
-        return sessionRepository.findById(session_id).get();
-    }
+        BigDecimal avgLatitude = BigDecimal.valueOf(0.0);
+        BigDecimal avgLongitude = BigDecimal.valueOf(0.0);
 
-    public List<Location> getAllLocations() {
-        return locationRepository.findAll();
+        for (Location l : currentSession.getLocations() ) {
+
+            avgLatitude = avgLatitude.add(l.getLatitude());
+            avgLongitude = avgLongitude.add(l.getLongitude());
+        }
+
+        avgLatitude = avgLatitude.divide(BigDecimal.valueOf(currentSession.getLocations().size()), 2, RoundingMode.HALF_EVEN);
+        avgLongitude = avgLongitude.divide(BigDecimal.valueOf(currentSession.getLocations().size()), 2, RoundingMode.HALF_EVEN);
+
+
+        return LocationResponse.builder()
+                .latitude(avgLatitude)
+                .longitude(avgLongitude)
+                .build();
+
     }
 }
