@@ -45,8 +45,6 @@ public class SessionService {
         locationRepository.save(location);
         log.info("New Location added: " + location.getLatitude() + ", " + location.getLongitude());
 
-
-
         return this.mapToSessionResponse(savedSession);
 
     }
@@ -93,8 +91,8 @@ public class SessionService {
             avgLongitude = avgLongitude.add(l.getLongitude());
         }
 
-        avgLatitude = avgLatitude.divide(BigDecimal.valueOf(currentSession.getLocations().size()), 2, RoundingMode.HALF_EVEN);
-        avgLongitude = avgLongitude.divide(BigDecimal.valueOf(currentSession.getLocations().size()), 2, RoundingMode.HALF_EVEN);
+        avgLatitude = avgLatitude.divide(BigDecimal.valueOf(currentSession.getLocations().size()), 10, RoundingMode.HALF_EVEN);
+        avgLongitude = avgLongitude.divide(BigDecimal.valueOf(currentSession.getLocations().size()), 10, RoundingMode.HALF_EVEN);
 
 
         return LocationResponse.builder()

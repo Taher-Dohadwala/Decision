@@ -23,7 +23,10 @@ public class Location {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long location_id;
 
+    @Column(precision = 19, scale = 10)
     private BigDecimal latitude;
+
+    @Column(precision = 19, scale = 10)
     private BigDecimal longitude;
 
     @ManyToOne
