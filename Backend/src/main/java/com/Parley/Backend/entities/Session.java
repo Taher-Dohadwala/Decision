@@ -28,6 +28,10 @@ public class Session {
     @OneToMany(mappedBy = "session")
     private List<Location> locations;
 
+    @OneToOne
+    @JoinColumn(name = "location_id")
+    private Location centerLocation;
+
 
     //private DecisionState decisionState;
 

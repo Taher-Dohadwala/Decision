@@ -44,6 +44,12 @@ public class SessionController {
 
     }
 
+    @PostMapping("/start/{session_id}")
+    @ResponseStatus(HttpStatus.OK)
+    public SessionResponse startSession(@PathVariable("session_id") Long sessionId) {
+        return sessionService.startSession(sessionId);
+    }
+
     @GetMapping("/locations")
     @ResponseStatus(HttpStatus.OK)
     public List<Location> getLocations(){

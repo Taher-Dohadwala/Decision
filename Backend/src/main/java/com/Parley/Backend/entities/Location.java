@@ -34,4 +34,8 @@ public class Location {
     @JsonIgnore
     private Session session;
 
+    @OneToOne(mappedBy = "centerLocation")
+    @JsonIgnore
+    private Session centerLocationSession;
+
 }

@@ -70,13 +70,6 @@ public class SessionService {
         return this.mapToSessionResponse(joinSession);
     }
 
-    private SessionResponse mapToSessionResponse(Session session){
-        return SessionResponse.builder()
-                .sessionId(session.getSessionId())
-                .sessionCode(session.getSessionCode())
-                .status(session.getStatus())
-                .build();
-    }
 
     public LocationResponse getCenterLocation(Long sessionId) {
 
@@ -101,4 +94,46 @@ public class SessionService {
                 .build();
 
     }
+
+    public SessionResponse startSession(Long sessionId) {
+        Session currentSession = sessionRepository.findById(sessionId).get();
+
+        currentSession.setStatus("In Progress");
+
+        BigDecimal avgLatitude = BigDecimal.valueOf(0.0);
+        BigDecimal avgLongitude = BigDecimal.valueOf(0.0);
+
+        for (Location l : currentSession.getLocations() ) {
+
+            avgLatitude = avgLatitude.add(l.getLatitude());
+            avgLongitude = avgLongitude.add(l.getLongitude());
+        }
+
+        avgLatitude = avgLatitude.divide(BigDecimal.valueOf(currentSession.getLocations().size()), 10, RoundingMode.HALF_EVEN);
+        avgLongitude = avgLongitude.divide(BigDecimal.valueOf(currentSession.getLocations().size()), 10, RoundingMode.HALF_EVEN);
+
+        Location centerLocation = new Location();
+        centerLocation.setLatitude(avgLatitude);
+        centerLocation.setLongitude(avgLongitude);
+
+        Location savedCenterLocation = locationRepository.save(centerLocation);
+        currentSession.setCenterLocation(savedCenterLocation);
+
+        Session savedStartedSession = sessionRepository.save(currentSession);
+
+        return this.mapToSessionResponse(savedStartedSession);
+
+
+
+    }
+
+
+    private SessionResponse mapToSessionResponse(Session session){
+        return SessionResponse.builder()
+                .sessionId(session.getSessionId())
+                .sessionCode(session.getSessionCode())
+                .status(session.getStatus())
+                .build();
+    }
+
 }
